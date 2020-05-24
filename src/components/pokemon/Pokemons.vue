@@ -1,6 +1,6 @@
 <template>
     <div class="row">
-        <single-pokemon v-for="pokemon in getPokemons" :key="pokemon.name" :pokemon="pokemon"></single-pokemon>
+        <single-pokemon v-for="pokemon in getPokemons" :key="pokemon.id" :pokemon="pokemon"></single-pokemon>
     </div>
 </template>
 

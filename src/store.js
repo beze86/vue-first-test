@@ -20,31 +20,25 @@ export const store = new Vuex.Store({
         }
     },
     actions: {
-        initPokemonApi: function( {commit} ) {
-            axios.get('https://pokeapi.co/api/v2/pokemon?limit=10')
+        initPokemonApi: function({commit} ) {
+            let t = axios.get('https://pokeapi.co/api/v2/pokemon?limit=10')
             .then((res) => {
                 return res.data.results;
             })
-            // .then((pokemons) => {
-            //     return Promise.all(pokemons.map((pokemon) => {
-            //         axios.get(pokemon.url)
-            //          .then((pokemon) => {
-            //              return {
-            //                name: pokemon.data.species.name,
-            //                id: pokemon.data.id
-            //              };
-            //          })
-            //      }))
-            // })
-            .then((pokemons) => {
-                return pokemons.map((pokemon) => {
-                    let id = pokemon.url.split('https://pokeapi.co/api/v2/pokemon/')[1].replace('/', '');
-                    console.log(id)
-                    return {
-                        name: pokemon.name,
-                        img: 'https://pokeres.bastionbot.org/images/pokemon/'+ id +'.png'
-                    }
-                })
+            .then(async (pokemons) => {
+                let t = await Promise.all(pokemons.map((pokemon) => {
+                    return axios.get(pokemon.url)
+                    .then((pokemon) => {
+                        return {
+                            id: pokemon.data.id,
+                            name: pokemon.data.species.name,
+                            types: pokemon.data.types,
+                            weight: pokemon.data.weight,
+                            img: 'https://pokeres.bastionbot.org/images/pokemon/'+ pokemon.data.id +'.png'
+                        }
+                    })
+                }))
+                return t
             })
             .then((pokemons) => {
                 commit('GET_POKEMONS', pokemons)
